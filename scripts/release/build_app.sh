@@ -64,8 +64,6 @@ cat > "$APP_DIR/Contents/Info.plist" <<PLIST
   <string>$BUILD_NUMBER</string>
   <key>LSMinimumSystemVersion</key>
   <string>13.0</string>
-  <key>LSUIElement</key>
-  <true/>
   <key>NSPrincipalClass</key>
   <string>NSApplication</string>
 </dict>

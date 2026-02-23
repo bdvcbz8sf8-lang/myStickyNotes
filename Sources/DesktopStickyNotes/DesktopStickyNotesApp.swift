@@ -201,8 +201,8 @@ enum DesktopStickyNotesApp {
         let app = NSApplication.shared
         let delegate = AppDelegate()
         app.delegate = delegate
-        let showDock = ProcessInfo.processInfo.environment["STICKY_NOTES_SHOW_DOCK"] == "1"
-        app.setActivationPolicy(showDock ? .regular : .accessory)
+        let menuBarOnly = ProcessInfo.processInfo.environment["STICKY_NOTES_MENU_BAR_ONLY"] == "1"
+        app.setActivationPolicy(menuBarOnly ? .accessory : .regular)
         app.run()
     }
 }
