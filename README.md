@@ -113,13 +113,10 @@ xcrun notarytool store-credentials "notary-profile"
 NOTARY_PROFILE="notary-profile" NOTARIZE=1 ./scripts/release/release.sh
 ```
 
-### GitHub Actions Release
+### CI Note
 
-Manual workflow is included at:
-
-- `.github/workflows/release.yml`
-
-Required repository secrets:
+If you want GitHub Actions notarized releases, add a workflow file in
+`.github/workflows/` and configure these repository secrets:
 
 - `DEVELOPER_ID_P12_BASE64`
 - `DEVELOPER_ID_P12_PASSWORD`
