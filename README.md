@@ -69,3 +69,61 @@ This repository intentionally excludes:
 - tags/folders/search/archive
 - drag-and-drop files
 - onboarding/settings/history
+
+## Installable Build (Signed/Notarized)
+
+The repo includes release scripts for a real installable macOS app:
+
+- `scripts/release/build_app.sh` - build `.app` bundle + sign
+- `scripts/release/package_dmg.sh` - create installer `.dmg`
+- `scripts/release/notarize.sh` - notarize + staple
+- `scripts/release/release.sh` - run full pipeline
+
+Output directory:
+
+- `build-release/DesktopStickyNotes.app`
+- `build-release/DesktopStickyNotes.dmg`
+
+### Local Release (ad-hoc sign)
+
+```bash
+cd /Users/kuddelmuddel/Desktop/Notes/DesktopStickyNotes
+./scripts/release/release.sh
+```
+
+### Developer ID + Notarization
+
+1. Install/import your `Developer ID Application` certificate in Keychain.
+2. Run:
+
+```bash
+cd /Users/kuddelmuddel/Desktop/Notes/DesktopStickyNotes
+SIGN_IDENTITY="Developer ID Application: YOUR NAME (TEAMID)" \
+APPLE_ID="you@example.com" \
+APPLE_APP_PASSWORD="xxxx-xxxx-xxxx-xxxx" \
+APPLE_TEAM_ID="TEAMID" \
+NOTARIZE=1 \
+./scripts/release/release.sh
+```
+
+Alternative auth via stored notary profile:
+
+```bash
+xcrun notarytool store-credentials "notary-profile"
+NOTARY_PROFILE="notary-profile" NOTARIZE=1 ./scripts/release/release.sh
+```
+
+### GitHub Actions Release
+
+Manual workflow is included at:
+
+- `.github/workflows/release.yml`
+
+Required repository secrets:
+
+- `DEVELOPER_ID_P12_BASE64`
+- `DEVELOPER_ID_P12_PASSWORD`
+- `KEYCHAIN_PASSWORD`
+- `APPLE_ID`
+- `APPLE_APP_PASSWORD`
+- `APPLE_TEAM_ID`
