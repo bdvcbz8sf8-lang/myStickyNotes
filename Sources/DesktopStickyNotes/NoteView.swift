@@ -232,6 +232,33 @@ struct NoteView: View {
 private struct NoteTextEditor: NSViewRepresentable {
     @Binding var text: String
 
+    final class ShortcutTextView: NSTextView {
+        override func keyDown(with event: NSEvent) {
+            let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+            let hasShortcutModifier = flags.contains(.command) || flags.contains(.control)
+            if hasShortcutModifier && !flags.contains(.option) {
+                // Use physical key codes so shortcuts work in any keyboard layout.
+                switch event.keyCode {
+                case 8: // C
+                    copy(self)
+                    return
+                case 9: // V
+                    paste(self)
+                    return
+                case 7: // X
+                    cut(self)
+                    return
+                case 0: // A
+                    selectAll(self)
+                    return
+                default:
+                    break
+                }
+            }
+            super.keyDown(with: event)
+        }
+    }
+
     final class Coordinator: NSObject, NSTextViewDelegate {
         var parent: NoteTextEditor
 
@@ -250,15 +277,28 @@ private struct NoteTextEditor: NSViewRepresentable {
     }
 
     func makeNSView(context: Context) -> NSScrollView {
-        let scrollView = NSTextView.scrollableTextView()
+        let scrollView = NSScrollView()
         scrollView.drawsBackground = false
         scrollView.hasVerticalScroller = true
         scrollView.hasHorizontalScroller = false
         scrollView.autohidesScrollers = true
 
-        guard let textView = scrollView.documentView as? NSTextView else {
-            return scrollView
-        }
+        let textStorage = NSTextStorage()
+        let layoutManager = NSLayoutManager()
+        textStorage.addLayoutManager(layoutManager)
+
+        let textContainer = NSTextContainer(containerSize: NSSize(width: 0, height: CGFloat.greatestFiniteMagnitude))
+        textContainer.widthTracksTextView = true
+        layoutManager.addTextContainer(textContainer)
+
+        let textView = ShortcutTextView(frame: .zero, textContainer: textContainer)
+        textView.minSize = NSSize(width: 0, height: 0)
+        textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+        textView.isVerticallyResizable = true
+        textView.isHorizontallyResizable = false
+        textView.autoresizingMask = [NSView.AutoresizingMask.width]
+        textView.textContainer?.containerSize = NSSize(width: 0, height: CGFloat.greatestFiniteMagnitude)
+        textView.textContainer?.widthTracksTextView = true
 
         textView.delegate = context.coordinator
         textView.drawsBackground = false
@@ -268,15 +308,14 @@ private struct NoteTextEditor: NSViewRepresentable {
         textView.importsGraphics = false
         textView.isAutomaticLinkDetectionEnabled = false
         textView.isContinuousSpellCheckingEnabled = false
-        textView.font = .systemFont(ofSize: 14)
-        textView.isVerticallyResizable = true
-        textView.isHorizontallyResizable = false
-        textView.textContainer?.widthTracksTextView = true
+        textView.font = NSFont.systemFont(ofSize: 14)
         textView.string = text
 
         // Keep text clear of the overlay scrollbar.
         textView.textContainerInset = NSSize(width: 10, height: 10)
         textView.textContainer?.lineFragmentPadding = 2
+
+        scrollView.documentView = textView
         return scrollView
     }
 

@@ -2,7 +2,8 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-APP_NAME="${APP_NAME:-DesktopStickyNotes}"
+APP_NAME="${APP_NAME:-StickyNotes}"
+EXECUTABLE_NAME="${EXECUTABLE_NAME:-DesktopStickyNotes}"
 BUNDLE_ID="${BUNDLE_ID:-com.example.desktopstickynotes}"
 VERSION="${VERSION:-0.1.0}"
 BUILD_NUMBER="${BUILD_NUMBER:-$(date +%Y%m%d%H%M)}"
@@ -12,8 +13,8 @@ SIGN_IDENTITY="${SIGN_IDENTITY:-}"
 
 APP_DIR="$OUT_DIR/$APP_NAME.app"
 ICONSET_DIR="$OUT_DIR/AppIcon.iconset"
-BIN_PATH_APPLE="$ROOT_DIR/.build/apple/Products/Release/$APP_NAME"
-BIN_PATH_ARM="$ROOT_DIR/.build/arm64-apple-macosx/release/$APP_NAME"
+BIN_PATH_APPLE="$ROOT_DIR/.build/apple/Products/Release/$EXECUTABLE_NAME"
+BIN_PATH_ARM="$ROOT_DIR/.build/arm64-apple-macosx/release/$EXECUTABLE_NAME"
 
 echo "==> Building Swift package (release)"
 cd "$ROOT_DIR"
@@ -36,8 +37,8 @@ fi
 echo "==> Preparing app bundle"
 rm -rf "$APP_DIR" "$ICONSET_DIR"
 mkdir -p "$APP_DIR/Contents/MacOS" "$APP_DIR/Contents/Resources" "$ICONSET_DIR"
-cp "$BIN_PATH" "$APP_DIR/Contents/MacOS/$APP_NAME"
-chmod +x "$APP_DIR/Contents/MacOS/$APP_NAME"
+cp "$BIN_PATH" "$APP_DIR/Contents/MacOS/$EXECUTABLE_NAME"
+chmod +x "$APP_DIR/Contents/MacOS/$EXECUTABLE_NAME"
 
 cat > "$APP_DIR/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
@@ -47,7 +48,7 @@ cat > "$APP_DIR/Contents/Info.plist" <<PLIST
   <key>CFBundleDevelopmentRegion</key>
   <string>en</string>
   <key>CFBundleExecutable</key>
-  <string>$APP_NAME</string>
+  <string>$EXECUTABLE_NAME</string>
   <key>CFBundleIconFile</key>
   <string>AppIcon</string>
   <key>CFBundleIdentifier</key>

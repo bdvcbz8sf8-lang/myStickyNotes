@@ -9,6 +9,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     private var statusItem: NSStatusItem?
     private var notesCancellable: AnyCancellable?
+    private var appDisplayName: String {
+        (Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String) ?? "StickyNotes"
+    }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         applyAppIcon()
@@ -94,7 +97,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let appMenuItem = NSMenuItem()
         mainMenu.addItem(appMenuItem)
         let appMenu = NSMenu()
-        let quit = NSMenuItem(title: "Quit DesktopStickyNotes", action: #selector(handleQuit), keyEquivalent: "q")
+        let quit = NSMenuItem(title: "Quit \(appDisplayName)", action: #selector(handleQuit), keyEquivalent: "q")
         quit.target = self
         appMenu.addItem(quit)
         mainMenu.setSubmenu(appMenu, for: appMenuItem)

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-APP_NAME="${APP_NAME:-DesktopStickyNotes}"
+APP_NAME="${APP_NAME:-StickyNotes}"
 OUT_DIR="${OUT_DIR:-$ROOT_DIR/build-release}"
 VOL_NAME="${VOL_NAME:-$APP_NAME}"
 DMG_NAME="${DMG_NAME:-$APP_NAME.dmg}"
